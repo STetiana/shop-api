@@ -1,52 +1,50 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 from .models import Product
 from .serializers import ProductSerializer
 
 # Create your views here.
-@csrf_exempt
+@api_view(['GET', 'POST'])
 def product_list(request):
     """
     List all code snippets, or create a new snippet.
     """
     if request.method == 'GET':
-        snippets = Product.objects.all()
-        serializer = ProductSerializer(snippets, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ProductSerializer(data=data)
+        serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
 def product_detail(request, pk):
     """
     Retrieve, update or delete a code snippet.
     """
     try:
-        snippet = Product.objects.get(pk=pk)
+        product = Product.objects.get(pk=pk)
     except Product.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'GET':
-        serializer = ProductSerializer(snippet)
-        return JsonResponse(serializer.data)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProductSerializer(snippet, data=data)
+        serializer = ProductSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        snippet.delete()
-        return HttpResponse(status=204)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
