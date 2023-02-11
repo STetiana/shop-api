@@ -38,4 +38,6 @@ jobs:
         cd shop
         python manage.py migrate
     - name: Run tests
-      run: python manage.py test
+      run: |
+        cd shop
+        python manage.py test
