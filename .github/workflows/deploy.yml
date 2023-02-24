@@ -3,7 +3,7 @@ name: Deploy to ECR
 on:
  
   push:
-    branches: [ master ]
+    branches: [ "main" ]
 
 jobs:
   
@@ -12,11 +12,36 @@ jobs:
     name: Build Image
     runs-on: ubuntu-latest
 
-   
-    steps:
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    - name: Check out code
-      uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run migrations
+      run: |
+        cd shop
+        python manage.py migrate
+    - name: Run tests
+      run: |
+        cd shop
+        python manage.py test
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
