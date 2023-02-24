@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -87,14 +87,24 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",  # set in docker-compose.yml
+        "NAME": os.environ.get('DB_NAME'),
+        "USER": os.environ.get('DB_USER'),
+        "PASSWORD": os.environ.get('DB_PASS'),
+        "HOST": os.environ.get('DB_HOST'),  # set in docker-compose.yml
         "PORT": 5432,  # default postgres port
     }
 }
-
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+           'ENGINE': 'django.db.backends.postgresql',
+           'NAME': 'github_actions',
+           'USER': 'postgres',
+           'PASSWORD': 'postgres',
+           'HOST': '127.0.0.1',
+           'PORT': '5432',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
