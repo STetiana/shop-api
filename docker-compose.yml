@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    volumes:
+      - web-django:/usr/src/app
+      - web-static:/usr/src/app/static
+    env_file: 
+      - .env
+    command: sh -c "python ./shop/manage.py migrate && python ./shop/manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - postgres
+    networks:
+      - app
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=pgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    networks:
+      - app
+
+
+volumes:
+  web-django:
+  web-static:
+  pgdata:
+
+networks:
+  app:
+    driver: bridge
