@@ -12,7 +12,83 @@
                 }
             ],
             "essential": true,
-            "environment": [],
+            "environment": [
+                {
+                    "name": "ALLOWED_HOSTS",
+                    "value": "localhost 127.0.0.1 0.0.0.0 [::1] *"
+                },
+                {
+                    "name": "ENGINE",
+                    "value": "django.db.backends.postgresql"
+                },
+                {
+                    "name": "DB_NAME",
+                    "value": "pgres"
+                },
+                {
+                    "name": "DB_USER",
+                    "value": "postgres"
+                },
+                {
+                    "name": "DB_PASS",
+                    "value": "docker"
+                },
+                {
+                    "name": "DB_HOST",
+                    "value": "127.0.0.1"
+                },
+                {
+                    "name": "DB_PORT",
+                    "value": "5432"
+                },
+                {
+                    "name": "APP_PORT",
+                    "value": "8000"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/shop-api",
+                    "awslogs-region": "eu-central-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        },
+        {
+            "name": "postgres",
+            "image": "postgres:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 5432,
+                    "hostPort": 5432,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "POSTGRES_HOST_AUTH_METHOD",
+                    "value": "trust"
+                },
+                {
+                    "name": "POSTGRES_DB",
+                    "value": "pgres"
+                },
+                {
+                    "name": "POSTGRES_USER",
+                    "value": "postgres"
+                },
+                {
+                    "name": "POSTGRES_PASSWORD",
+                    "value": "docker"
+                }
+            ],
             "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
