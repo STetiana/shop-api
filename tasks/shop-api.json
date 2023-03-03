@@ -12,6 +12,12 @@
                 }
             ],
             "essential": true,
+            "dependsOn": [
+                {
+                    "containerName": "postgres",
+                    "condition": "START"
+                }
+            ],
             "environment": [
                 {
                     "name": "ALLOWED_HOSTS",
@@ -47,6 +53,9 @@
                 }
             ],
             "environmentFiles": [],
+            "command": [
+                "sh -c "python ./shop/manage.py migrate && python ./shop/manage.py runserver 0.0.0.0:8000""
+            ],
             "mountPoints": [],
             "volumesFrom": [],
             "logConfiguration": {
