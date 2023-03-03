@@ -54,7 +54,7 @@
             ],
             "environmentFiles": [],
             "command": [
-                "sh -c "python ./shop/manage.py migrate && python ./shop/manage.py runserver 0.0.0.0:8000""
+                "sh -c 'python ./shop/manage.py migrate && python ./shop/manage.py runserver 0.0.0.0:8000'"
             ],
             "mountPoints": [],
             "volumesFrom": [],
