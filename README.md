@@ -73,10 +73,7 @@ Access the API at [http://localhost:8000/products/](http://localhost:8000/produc
 
 ## CI/CD Pipeline
 
-There is two pipelines. First one runs tests, when a new commit is pushed to any branch, except main. Second one is triggered when new commit is pushed to the main branch. The pipeline does the following:
-
-1. Builds a Docker image of the application
-2. Pushes the Docker image to AWS ECR
+This project consists of two CI pipelines to streamline the development process. The first pipeline is triggered when code is pushed to any branch other than main. This pipeline will automatically build and test the code to ensure its quality before it is merged into the main branch. The second pipeline is triggered when code is pushed to the main branch. This pipeline will build the code, create a Docker image, and deploy it to Amazon Elastic Container Registry (ECR).
 
 To use this pipeline, you need to set up the following:
 
